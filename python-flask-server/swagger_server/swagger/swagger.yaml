@@ -1,0 +1,157 @@
+---
+swagger: "2.0"
+info:
+  description: "API"
+  version: "1.0.0"
+  title: "Django Tutorial"
+host: "127.0.0.1:8000"
+basePath: "/myapp1"
+paths:
+  /user/create/:
+    post:
+      description: "Create a new user"
+      operationId: "user_create"
+      parameters:
+      - in: "body"
+        name: "name"
+        description: "The name of the person"
+        required: false
+        schema:
+          $ref: "#/definitions/name"
+      responses:
+        201:
+          description: "Person created successfully"
+      x-swagger-router-controller: "swagger_server.controllers.default_controller"
+  /project/create/:
+    post:
+      description: "Create a project"
+      operationId: "project_create"
+      parameters:
+      - in: "body"
+        name: "name"
+        description: "Name of project"
+        required: false
+        schema:
+          $ref: "#/definitions/name"
+      responses:
+        201:
+          description: "Project created successfully"
+      x-swagger-router-controller: "swagger_server.controllers.default_controller"
+  /user/assignProject/:
+    post:
+      description: "Assign project to a user"
+      operationId: "assign_project"
+      parameters:
+      - in: "body"
+        name: "Data"
+        description: "Project Id"
+        required: false
+        schema:
+          $ref: "#/definitions/assignProject"
+      responses:
+        201:
+          description: "Mentor assigned successfully"
+      x-swagger-router-controller: "swagger_server.controllers.default_controller"
+  /project/{project_id}/assignMentor/{user_id}/:
+    post:
+      operationId: "assign_mentor"
+      parameters:
+      - name: "project_id"
+        in: "path"
+        description: "ID of project"
+        required: true
+        type: "integer"
+      - name: "user_id"
+        in: "path"
+        description: "ID of mentor"
+        required: true
+        type: "integer"
+      responses:
+        200:
+          description: "Successfully assigned mentor"
+      x-swagger-router-controller: "swagger_server.controllers.default_controller"
+  /user/{user_id}/mentees/:
+    get:
+      description: "Get the list of IDs of the users being mentored by the queried\
+        \ user."
+      operationId: "get_mentees"
+      parameters:
+      - name: "user_id"
+        in: "path"
+        description: "ID of the user"
+        required: true
+        type: "integer"
+      responses:
+        200:
+          description: "List of mentees"
+      x-swagger-router-controller: "swagger_server.controllers.default_controller"
+  /user/{user_id}/mentoring/:
+    get:
+      description: "Get the list of IDs of the projects being mentored by the queried\
+        \ user."
+      operationId: "get_mentoring_projects"
+      parameters:
+      - name: "user_id"
+        in: "path"
+        description: "ID of the user"
+        required: true
+        type: "integer"
+      responses:
+        200:
+          description: "List of projects"
+      x-swagger-router-controller: "swagger_server.controllers.default_controller"
+  /project/{project_id}/:
+    get:
+      description: "Get the list of IDs of the mentors and users of the project"
+      operationId: "get_users_and_mentors"
+      parameters:
+      - name: "project_id"
+        in: "path"
+        description: "ID of the project"
+        required: true
+        type: "integer"
+      responses:
+        200:
+          description: "Users and mentors"
+      x-swagger-router-controller: "swagger_server.controllers.default_controller"
+definitions:
+  name:
+    type: "object"
+    properties:
+      name:
+        type: "string"
+        description: "Name"
+  project_id:
+    type: "object"
+    properties:
+      project_id:
+        type: "integer"
+        description: "ID"
+  assignProject:
+    type: "object"
+    properties:
+      project_id:
+        type: "integer"
+        description: "ID"
+      users:
+        type: "array"
+        items:
+          type: "integer"
+  Project_User:
+    properties:
+      user:
+        type: "integer"
+        description: "Mentee/Mentor ID"
+      project:
+        type: "integer"
+        description: "Project ID"
+      is_mentor:
+        type: "boolean"
+        description: "Denotes whether the user is a mentor or a mentee"
+    description: "object"
+  Project:
+    type: "object"
+    properties:
+      name:
+        type: "string"
+        description: "Name of Project"

@@ -1,0 +1,148 @@
+openapi: 3.0.1
+info:
+  title: Django Assignment
+  description: |
+    This is the OpenAPI definition for the Django Assignment.
+  version: 1.0.0
+paths:
+  /myapp1/users/:
+    get:
+      summary: Get all users
+      responses:
+        200:
+          description: The Request was successful.
+    post:
+      summary: Create a new instance of a User.
+      requestBody:
+        description: A JSON object defining the User.
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/User'
+      responses:
+        '201':
+          description: User created.
+        '400':
+          $ref: '#/components/responses/400'
+  /myapp1/projects/:
+    get:
+      summary: Get all projects
+      responses:
+        200:
+          description: The Request was successful.
+    post:
+      summary: Create a new instance of a Project.
+      requestBody:
+        description: A JSON object defining the Project.
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Project'
+      responses:
+        '201':
+          description: Project created.
+        '400':
+          $ref: '#/components/responses/400'          
+  /myapp1/projects/{project_id}/assign-users/:
+    post:
+      summary: Assign users to a project.
+      parameters:
+        - name: project_id
+          in: path
+          description: ID of the project
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        description: A JSON object containing the list of users
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Users'
+      responses:
+        '200':
+          description: Users assigned successfully.
+  /myapp1/projects/{project_id}/mentors/{mentor_id}/:
+    post:
+      summary: Assign mentor to a project.
+      parameters:
+        - name: project_id
+          in: path
+          description: ID of the project
+          required: true
+          schema:
+            type: integer
+        - name: mentor_id
+          in: path
+          description: ID of the user to be assigned as a mentor
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Users assigned successfully.          
+  /myapp1/users/{user_id}/mentees/:
+    get:
+      summary: Get the mentees of a user.
+      parameters:
+        - name: user_id
+          in: path
+          description: ID of the User
+          required: true
+          schema:
+            type: integer
+      responses:
+        200:
+          description: The Request was successful.
+  /myapp1/users/{user_id}/mentoring-projects/:
+    get:
+      summary: Get the projects a user is mentoring.
+      parameters:
+        - name: user_id
+          in: path
+          description: ID of the User
+          required: true
+          schema:
+            type: integer
+      responses:
+        200:
+          description: The Request was successful.
+  /myapp1/projects/{project_id}/:
+    get:
+      summary: Get the projects and user of a project.
+      parameters:
+        - name: project_id
+          in: path
+          description: ID of the Project
+          required: true
+          schema:
+            type: integer
+      responses:
+        200:
+          description: The Request was successful.  
+components:
+  schemas:
+    User:
+      type: object
+      properties:
+        name:
+          type: string
+    Project:
+      type: object
+      properties:
+        name:
+          type: string
+    Users:
+      type: object
+      properties:
+        users:
+          type: array
+          items: {
+            type: integer
+          }
+  responses:
+    '400':
+      description: A request has not been formulated correctly and the server cannot respond successfully.
