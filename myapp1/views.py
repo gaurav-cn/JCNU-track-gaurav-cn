@@ -43,7 +43,7 @@ class UserView(View):
 class ProjectView(View):
     @exception_handler
     def get(self, request):
-        response = [{"project_id": project.id, "name": project.name} for project in Project.objects.all()]
+        response = [project.get_details() for project in Project.objects.all()]
         return HttpResponse(json.dumps(response), status = 200, content_type = "application/json")
 
     @exception_handler
@@ -99,21 +99,7 @@ def get_mentoring_projects(request, user_id):
 @api_view(['GET'])
 @exception_handler
 def get_users_and_mentors(request, project_id):
-    response = {
-        "users": [],
-        "mentors": []
-    }
-    for row in Project_User.objects.filter(project_id = project_id):
-        if (row.is_mentor == False):
-            response["users"].append({
-                "user_id": row.user.id,
-                "name": row.user.name
-            })
-        if (row.is_mentor == True):
-            response["mentors"].append({
-                "user_id": row.user.id,
-                "name": row.user.name
-            })
+    response = Project.objects.get(id = project_id).get_details()
     return HttpResponse(json.dumps(response), content_type = "application/json", status = 200)
         
     

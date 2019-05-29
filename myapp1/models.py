@@ -15,6 +15,26 @@ class Project(models.Model):
     def __str__(self):
         return self.name
 
+    def get_details(self):
+        details = {
+            "id": self.id,
+            "name": self.name,
+            "users": [],
+            "mentors": []
+        }
+        for row in Project_User.objects.filter(project_id = self.id):
+            if (row.is_mentor == False):
+                details["users"].append({
+                    "user_id": row.user.id,
+                    "name": row.user.name
+                })
+            if (row.is_mentor == True):
+                details["mentors"].append({
+                    "user_id": row.user.id,
+                    "name": row.user.name
+                })
+        return details
+
 class Project_User(models.Model):
     user = models.ForeignKey(User, on_delete = models.CASCADE)
     project = models.ForeignKey(Project, on_delete = models.CASCADE)
