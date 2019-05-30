@@ -116,6 +116,13 @@ def store_stream_project(request):
 def compare_stream_project(request):
     json_data = json.loads(request.body.decode("utf-8"))
     response = {
-        "same": int(str(json_data) == StreamProject.objects.get(id = json_data["id"]).data)
+        "same": 0
     }
+    row = None
+    try:
+        row = StreamProject.objects.get(id = json_data["id"])
+    except:
+        pass
+    if (row != None):
+        response["same"] = int(str(json_data) == row.data)
     return HttpResponse(json.dumps(response), content_type = "application/json", status = 200)
