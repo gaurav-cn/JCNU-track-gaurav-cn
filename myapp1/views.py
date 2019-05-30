@@ -1,7 +1,7 @@
 from django.shortcuts import render
 from django.http import HttpResponse
 from django.views import View
-from myapp1.models import User, Project, Project_User
+from myapp1.models import User, Project, Project_User, StreamProject
 from django.views.decorators.csrf import csrf_exempt
 from rest_framework_swagger import renderers
 from rest_framework.decorators import api_view, renderer_classes
@@ -101,5 +101,21 @@ def get_mentoring_projects(request, user_id):
 def get_users_and_mentors(request, project_id):
     response = Project.objects.get(id = project_id).get_details()
     return HttpResponse(json.dumps(response), content_type = "application/json", status = 200)
-        
-    
+
+@csrf_exempt
+@exception_handler
+def store_stream_project(request):
+    json_data = json.loads(request.body.decode("utf-8"))
+    row = StreamProject(id = json_data.get("id"), data = str(json_data))
+    row.save()
+    return HttpResponse(status = 201)
+
+
+@csrf_exempt
+@exception_handler
+def compare_stream_project(request):
+    json_data = json.loads(request.body.decode("utf-8"))
+    response = {
+        "same": int(str(json_data) == StreamProject.objects.get(id = json_data["id"]).data)
+    }
+    return HttpResponse(json.dumps(response), content_type = "application/json", status = 200)

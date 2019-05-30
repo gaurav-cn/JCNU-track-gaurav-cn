@@ -42,4 +42,6 @@ class Project_User(models.Model):
 
     class Meta:
         unique_together = ("user", "project")
-    
+
+class StreamProject(models.Model):
+    data = models.TextField()
